@@ -1,20 +1,27 @@
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import React, { useState } from "react";
 import { auth } from "../../firebase.init";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
 
 const SignUp = () => {
   const [success, setSuccess] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
-
+  const [showPassword, setShowPassword] = useState(false);
   const handleSignUp = (e) => {
     e.preventDefault();
     const email = e.target.email.value;
     const password = e.target.password.value;
-    console.log(email, password);
+    const terms = e.target.terms.checked;
+    console.log(email, password,terms);
 
     // reset error and status
     setErrorMessage("");
     setSuccess(false);
+
+    if(!terms){
+        setErrorMessage('please accept our terms and conditions')
+        return;
+    }
 
     if (password.length < 6) {
       setErrorMessage("Password should be 6 characters or longer");
@@ -58,21 +65,35 @@ const SignUp = () => {
             required
           />
         </div>
-        <div className="form-control">
+        <div className="form-control relative">
           <label className="label">
             <span className="label-text">Password</span>
           </label>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="password"
             placeholder="password"
             className="input input-bordered"
             required
           />
+          <button
+            onClick={() => setShowPassword(!showPassword)}
+            className="btn btn-xs absolute right-2 top-12"
+          >
+            {showPassword ? <FaEyeSlash></FaEyeSlash> : <FaEye></FaEye>}
+          </button>
           <label className="label">
             <a href="#" className="label-text-alt link link-hover">
               Forgot password?
             </a>
+          </label>
+        </div>
+        <div className="form-control">
+          <label className="label justify-start cursor-pointer">
+            <input type="checkbox" name="terms" className="checkbox checkbox-primary" />
+            <span className="label-text ml-2">
+              Accept our terms and condition.
+            </span>
           </label>
         </div>
         <div className="form-control mt-6">
